@@ -1,0 +1,129 @@
+This function have different part and different things combined together
+First is get data from leads modules
+Based on condition update value of No. of bookings
+in the second conditional statement, if the no. of bookings is greater then 0, then update No.of bookings + 1
+and in this condition only we are getting response from api and we are converting it into number format and then we are pushing it to the contact module
+
+void automation.CreateBookingInContact(Int LeadID)
+{
+//get Leads details 
+getLeadDetails = zoho.crm.getRecordById("Leads",LeadID);
+leadEmail = getLeadDetails.get("Email");
+leadNoOfBooking = getLeadDetails.get("Number_of_Bookings");
+//get Contact details by checking that there exist any contact with same email before 
+contactList = zoho.crm.searchRecords("Contacts","(Email:equals:" + leadEmail + ")");
+getOldLeadRecord = zoho.crm.searchRecords("Leads","(Email:equals:" + leadEmail + ")");
+contactNoOfBooking = contactList.get(0).get("Number_of_Bookings");
+//if the number of bookings value is null
+if(contactList.size() <= 0 || leadNoOfBooking == null)
+{
+	//set number of booking to 0 
+	leadNoOfBooking = 0;
+	res = zoho.crm.updateRecord("Leads",LeadID,{"Number_of_Bookings":leadNoOfBooking});
+}
+//if statements end here
+//if there exist atleast one booking or inother words the leads email is present in contact
+if(contactList.size() > 0)
+{
+	//if there exist an entry in with same email in contacts
+	leadNoOfBooking = contactNoOfBooking + 1;
+	res = zoho.crm.updateRecord("Leads",LeadID,{"Number_of_Bookings":leadNoOfBooking});
+	//create a new record in CONTACTS with the updated value of everything
+	//bcoz the email, phone, etc. can be same
+	//but the drop off location will change every time with other details too
+	Address = getLeadDetails.get("Address");
+	Annual_Revenue = getLeadDetails.get("Annual_Revenue");
+	Car_type = getLeadDetails.get("Car_type");
+	Phone = getLeadDetails.get("Phone");
+	Second_Phone = getLeadDetails.get("Second_Phone");
+	Company = getLeadDetails.get("Company");
+	Date_and_Time = getLeadDetails.get("Date_and_Time");
+	DropOff = getLeadDetails.get("DropOff");
+	PickUp = getLeadDetails.get("PickUp");
+	Email = getLeadDetails.get("Email");
+	First_Name = getLeadDetails.get("First_Name");
+	Last_Name = getLeadDetails.get("Last_Name");
+	Industry = getLeadDetails.get("Industry");
+	Trip_type = getLeadDetails.get("Trip_type");
+	Note = getLeadDetails.get("Note");
+	Service_type = getLeadDetails.get("Service_type");
+	Lead_Source = getLeadDetails.get("Lead_Source");
+	Street = getLeadDetails.get("Street");
+	State = getLeadDetails.get("State");
+	Country = getLeadDetails.get("Country");
+	City = getLeadDetails.get("City");
+	Zip_Code = getLeadDetails.get("Zip_Code");
+	// 	Number_of_Bookings = getLeadDetails.get("Number_of_Bookings");
+	//+++++++++++++++++++++++++++linking with contact fields++++++++++++++++++++++++++++++++++
+	//Steps:
+	//1.Create map
+	//2.PUt values into it
+	//3.Create a new record in the contact module and in that statement only push it.
+	values_map = Map();
+	//map declaration. THis map is in the main context
+	//putting values into the map variable
+	values_map.put("First_Name",First_Name);
+	values_map.put("Last_Name",Last_Name);
+	values_map.put("Email",Email);
+	values_map.put("Lead_Source",Lead_Source);
+	values_map.put("Trip_Type",Trip_type);
+	values_map.put("Phone",Phone);
+	values_map.put("Second_Phone",Second_Phone);
+	values_map.put("PickUp_Location",PickUp);
+	values_map.put("DropOff_Location",DropOff);
+	values_map.put("Service_Type",Service_type);
+	values_map.put("Date_and_Time",Date_and_Time);
+	values_map.put("Car_Preference",Car_type);
+	values_map.put("Address",Address);
+	values_map.put("Mailing_Street",Street);
+	values_map.put("Mailing_State",State);
+	values_map.put("Mailing_City",City);
+	values_map.put("Mailing_Zip",Zip_Code);
+	values_map.put("Mailing_Country",Country);
+	values_map.put("Number_of_Bookings",leadNoOfBooking);
+	//get geo location data and put in map - starts
+	apiKey = "AIzaSyBHhZGbKM6-LCda4rl5iD9SzvVV4fs7wYs";
+	url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + encodeUrl(PickUp) + "&destinations=" + encodeUrl(DropOff) + "&key=" + apiKey;
+	headerMap = Map();
+	headerMap.put("content-type","application/json");
+	response = invokeurl
+	[
+		url :url
+		type :GET
+		headers:headerMap
+	];
+	//getting distance from the api response
+	distance_text = response.get("rows").get(0).get("elements").get(0).get("distance").get("text");
+	duration_text = response.get("rows").get(0).get("elements").get(0).get("duration").get("text");
+	// info distance_text;
+	// info duration_text;
+	//convert text to number format
+	space_index = distance_text.indexOf(" ");
+	number_distance = distance_text.subString(0,space_index);
+	number_distance = number_distance.toDecimal();
+	space_index1 = duration_text.indexOf(" ");
+	number_duration = duration_text.subString(0,space_index1);
+	number_duration = number_duration.toDecimal();
+	values_map.put("Trip_Distance",number_distance);
+	values_map.put("Trip_Duration",number_duration);
+	//here the geolocation data part - ends
+	//push values in Contacts Module
+	response = zoho.crm.createRecord("Contacts",values_map);
+	//++++++++++++++++Deletion of old Lead++++++++++++++++
+	//search the lead record using the email address
+	//put it in a map
+	//delete it using invokeConnector and crm.delete
+	for each  objectLead in getOldLeadRecord
+	{
+		currentRecordId = objectLead.get("id");
+		if(currentRecordId != LeadID)
+		{
+			deleteRecordMap = Map();
+			deleteRecordMap = {"module":"Leads","id":currentRecordId};
+			deleteFromLead = zoho.crm.invokeConnector("crm.delete",deleteRecordMap);
+		}
+	}
+}
+//if statement ends here
+//funtion ends below here
+}
