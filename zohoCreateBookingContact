@@ -82,7 +82,7 @@ if(contactList.size() > 0)
 	values_map.put("Mailing_Country",Country);
 	values_map.put("Number_of_Bookings",leadNoOfBooking);
 	//get geo location data and put in map - starts
-	apiKey = "AIzaSyBHhZGbKM6-LCda4rl5iD9SzvVV4fs7wYs";
+	apiKey = "abcdefghijklnoXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + encodeUrl(PickUp) + "&destinations=" + encodeUrl(DropOff) + "&key=" + apiKey;
 	headerMap = Map();
 	headerMap.put("content-type","application/json");
