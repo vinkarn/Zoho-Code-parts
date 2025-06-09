@@ -1,0 +1,42 @@
+void automation.migrateDealsToParentCRM(Int DealID)
+{
+headersMap = Map();
+headersMap.put("content-type","application/json");
+response = invokeurl
+[
+	url :"https://accounts.zoho.com/oauth/v2/token?grant_type=refresh_token&client_id=1000.KNWT7ZH39XYLCNXGHJIMJ9ZAXZ1B3S&client_secret=a8dd4bcc61b323091e9dd8985842548085dadd0797&redirect_uri=https://crm.zoho.in/&refresh_token=1000.3224334ee52f335ed8c3fa5d3926f65b.667ce1ef66c998cba3fa6162d6ea668f"
+	type :POST
+	headers:headersMap
+];
+accessToken = response.get("access_token");
+headersMap.put("Authorization","Zoho-oauthtoken " + accessToken);
+dealsData = zoho.crm.getRecordById("Deals",DealID);
+//getting data and stoirng in variables
+First_Name = dealsData.get("First_Name");
+Last_Name = dealsData.get("Last_Name");
+Email = dealsData.get("Email");
+Secondary_Email = dealsData.get("Secondary_Email");
+Address = dealsData.get("Address");
+Phone = dealsData.get("Phone");
+Deal_Name = dealsData.get("Deal_Name");
+//place values in map
+putMap = Map();
+putMap.put("Name",Deal_Name);
+putMap.put("Customer_Name",First_Name + " " + Last_Name);
+putMap.put("Customer_Phone_Number",Phone);
+putMap.put("Email",Email);
+putMap.put("Customer_Address",Address);
+putList = List();
+putList.add(putMap);
+newMap = Map();
+newMap.put("data",putList);
+//putting in other CRM module
+response2 = invokeurl
+[
+	url :"https://www.zohoapis.com/crm/v8/Al_Mosafers"
+	type :POST
+	parameters:newMap.toString(true)
+	headers:headersMap
+];
+// info response2;
+}
