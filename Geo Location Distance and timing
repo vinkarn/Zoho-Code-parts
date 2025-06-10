@@ -1,0 +1,31 @@
+void automation.Test()
+{
+contactID = 6816137000000583189;
+gotoAddress = "79MX+XV6, University Street, Baghdad, Baghdad Governorate, Iraq";
+fromAddress = "نهاية Airport St, Baghdad, 02340, Iraq";
+apiKey = "abcdefghijklmnopqrstuvwxyzxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + encodeUrl(fromAddress) + "&destinations=" + encodeUrl(gotoAddress) + "&key=" + apiKey;
+headerMap = Map();
+headerMap.put("content-type","application/json");
+response = invokeurl
+[
+	url :url
+	type :GET
+	headers:headerMap
+];
+distance_text = response.get("rows").get(0).get("elements").get(0).get("distance").get("text");
+duration_text = response.get("rows").get(0).get("elements").get(0).get("duration").get("text");
+// info distance_text;
+// info duration_text;
+//put into Leads Module
+space_index = distance_text.indexOf(" ");
+number_distance = distance_text.subString(0,space_index);
+number_distance = number_distance.toDecimal();
+space_index1 = duration_text.indexOf(" ");
+number_duration = duration_text.subString(0,space_index1);
+number_duration = number_duration.toDecimal();
+contactMap = Map();
+contactMap.put("Trip_Distance",number_distance);
+contactMap.put("Trip_Duration",number_duration);
+response = zoho.crm.updateRecord("Contacts",contactID,contactMap);
+}
