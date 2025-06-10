@@ -1,0 +1,14 @@
+//Price calculation
+	carName = Car_type;
+	priceData = zoho.crm.searchRecords("Pricings","(Car_Type:equals:" + carName + ")");
+	// 	info priceData;
+	if(priceData.size() > 0)
+	{
+		minimumPrice = priceData.get(0).get("Minimum_Price");
+		pricePerKm = priceData.get(0).get("Rate_Per_Km");
+		totalPrice = minimumPrice + number_distance * pricePerKm;
+		values_map.put("Trip_Price",totalPrice);
+	}
+	//push values in Contacts Module
+	response = zoho.crm.createRecord("Contacts",values_map);
+	
