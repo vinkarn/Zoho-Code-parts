@@ -1,0 +1,87 @@
+//this is code used to duplicate a record and update the RO_Number in correspondance to that
+
+autono = 0;
+last = Bulk_Release_Order[ID != 0] sort by RO_Number1 DESC range from 1 to 1;
+if(last != null && last.RO_Number1 != null && last.RO_Number1 != 0)
+{
+	autono = last.RO_Number1 + 1;
+}
+else
+{
+	autono = 1;
+}
+data = Bulk_Release_Order[ID == input.ID];
+created = insert into Bulk_Release_Order
+[
+	job_order_number=data.job_order_number
+	Added_User=zoho.loginuser
+	Vendor_name=data.Vendor_name
+	Publication_Name1=data.Publication_Name1
+	Vendor_Code1=data.Vendor_Code1
+	Email_Field=ifnull(data.Email_Field,"")
+	Email_SEC=ifnull(data.Email_SEC,"")
+	Email_third=ifnull(data.Email_third,"")
+	Language1=data.Language1
+	Edition=data.Edition
+	Ad_Size=data.Ad_Size
+	RO_Number1=autono
+	Date_field1=ifnull(data.Date_field1,'')
+	Client_Name=data.Client_Name
+	Date_of_Insertion=ifnull(data.Date_of_Insertion,'')
+	Remarks1=data.Remarks1
+	HEADLINE=data.HEADLINE
+	Color=data.Color
+	Position=data.Position
+	Material=data.Material
+	Address=ifnull(data.Address,"")
+	Rate=data.Rate
+	GST_5=data.GST_5
+	Total=data.Total
+	Net_Total=data.Net_Total
+];
+data2 = Bulk_Release_Order[ID == created];
+if(input.Language1 == "URDU" || input.Language1 == "Urdu" || input.Language1 == "urdu")
+{
+	data2.Width3=input.Width3;
+	data2.Height2=input.Height2;
+	data2.Workdrive_upload2=input.Workdrive_upload2;
+	data2.Local_Storage_uploadUrdu=input.Local_Storage_uploadUrdu;
+	weiiiie = input.Width3.toDecimal();
+	hiiiiie = input.Height2.toDecimal();
+}
+else if(input.Language1 == "HINDI" || input.Language1 == "Hindi" || input.Language1 == "hindi")
+{
+	data2.Width1=input.Width1;
+	data2.Height=input.Height;
+	data2.Local_Storage_uploadHindi=input.Local_Storage_uploadHindi;
+	data2.Workdrive_upload1=input.Workdrive_upload1;
+	weiiiie = input.Width1.toDecimal();
+	hiiiiie = input.Height.toDecimal();
+}
+else if(input.Language1 == "ENGLISH" || input.Language1 == "English" || input.Language1 == "english")
+{
+	data2.Width2=input.Width2;
+	data2.Height1=input.Height1;
+	data2.Local_Storage_uploadEng=input.Local_Storage_uploadEng;
+	data2.Workdrive_upload=input.Workdrive_upload;
+	weiiiie = input.Width2.toDecimal();
+	hiiiiie = input.Height1.toDecimal();
+}
+else if(input.Language1 == "PUNJABI" || input.Language1 == "Punjabi" || input.Language1 == "punjabi")
+{
+	data2.Width=input.Width;
+	data2.Height11=input.Height11;
+	data2.File_upload4=input.File_upload4;
+	data2.Local_Storage_uploadPunjabi=input.Local_Storage_uploadPunjabi;
+	weiiiie = input.Width.toDecimal();
+	hiiiiie = input.Height11.toDecimal();
+}
+else
+{
+	data2.Width_Other=input.Width_Other;
+	data2.Height_Other=input.Height_Other;
+	data2.Workdrive_upload_Other=input.Workdrive_upload_Other;
+	data2.Local_Storage_upload_Other=input.Local_Storage_upload_Other;
+	weiiiie = input.Width_Other.toDecimal();
+	hiiiiie = input.Height_Other.toDecimal();
+}
