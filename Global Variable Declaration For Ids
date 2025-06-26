@@ -1,0 +1,17 @@
+This function helps create a global variable to store the current ID or last used ID to keep track and generate new ids correspondingly.
+
+void automation.xyztesting()
+{
+//Firstly create a new zoho crm variable inside setup(setting)->Developer Hub->Variables	
+
+//get the last value from "Zoho Crm variable"
+ new_var = zoho.crm.getOrgVariable("Ro_number");
+
+ new_var = new_var.toNumber();//convert value to number
+ new_var = new_var + 1;//increment by one
+ 
+ valueMap = Map();//Create map
+ valueMap.put("apiname","Ro_number");
+ valueMap.put("value", new_var);
+ res = zoho.crm.invokeConnector("crm.set",valueMap);//push value using invoke connector
+}
