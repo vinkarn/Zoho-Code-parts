@@ -1,0 +1,15 @@
+abc = Collection();
+newList = List();
+newList.add("Funds requested from Belize Fund");
+newList.add("Contribution from applicant");
+newList.add("Contribution from partner");
+newList.add("Organizations (Co-financing)");
+newList.add("Total Project Estimated Cost");
+for each  ele in newList
+{
+	row1 = GAP_PROPOSAL.Project_Budget_Summary();
+	row1.Contributing_Organizations=ele;
+	newCol = Collection();
+	newCol.insert(row1);
+	input.Project_Budget_Summary.insert(newCol);
+}
