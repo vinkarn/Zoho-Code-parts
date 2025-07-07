@@ -1,0 +1,56 @@
+//Crm to books, data updatation
+void automation.quotationToZohoBooksFunction(Int QuotationId)
+{
+dataQuotations = zoho.crm.getRecordById("Quotations",QuotationId);
+Subform_1 = dataQuotations.get("Subform_1");
+for each  mini_form in Subform_1
+{
+	Cost_Price = mini_form.get("Cost_Price");
+	Selling_Price = mini_form.get("Selling_Price");
+	Product_Name = mini_form.get("Products").get("name");
+	Size = mini_form.get("Size").get("name");
+	Color = mini_form.get("Color");
+	Varient = mini_form.get("Varient").get("name");
+	Shoe_Size = mini_form.get("Shoe_Size");
+	Approved = mini_form.get("Approved");
+	Types = "goods";
+	Account_Name = "Sales";
+	if(Approved == true)
+	{
+		valueMap = Map();
+		valueMap.put("can_be_sold",true);
+		valueMap.put("can_be_purchased",true);
+		valueMap.put("product_type",Types);
+		valueMap.put("name",Product_Name);
+		valueMap.put("rate",Cost_Price);
+		valueMap.put("purchase_rate",Cost_Price);
+		valueMap.put("sales_rate",Selling_Price);
+		valueMap.put("account_name",Account_Name);
+		//custom fields
+		customFieldList = List();
+		c1 = Map();
+		c1.put("customfield_id",2697420000000034019);
+		c1.put("value",Shoe_Size);
+		c2 = Map();
+		c2.put("customfield_id",2697420000000034013);
+		c2.put("value",Varient);
+		customFieldList.add(c1);
+		customFieldList.add(c2);
+		headersMap = Map();
+		headersMap.put("Content-Type","application/json");
+		valueMap.put("custom_fields",customFieldList);
+		valueMap.put("purchase_account_name","Cost of Goods Sold");
+		// 		putValuesInBooks = invokeUrl
+		//         [
+		//                      url:"https://www.zohoapis.com/books/v3/items?organization_id=60043102411"
+		//         	type: POST
+		// 			parameters: valueMap.toString()
+		//         	headers: headersMap
+		//         	connection: "books1"
+		//         ];
+		// 		info putValuesInBooks;
+		response2 = zoho.books.createRecord("Items","60043102411",valueMap.toString(),"books1");
+		info response2;
+	}
+}
+}
