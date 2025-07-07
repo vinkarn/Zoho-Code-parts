@@ -1,0 +1,39 @@
+//This helps in creating sales order using deluge scriopt from Creator to Inventory
+//in order to add multiple items and pick mulitple items from any subform object, we can use a for loop to to store multiple things in a local scope map,
+//and put that in a global scope list, and push this list in another map, that is storing all the other relelated data.
+//the key of this map should "line_items" and the list as the value.
+void SalesOrderFunction2()
+{
+	new1 = Sales_Order[ID != 0];//select every element whose id is not zero
+	newMap = Map();
+	itemList = List();
+	newMap2 = Map();
+	for each  ele in new1
+	{
+		itemData = Item_Master[ID != 0];
+		CustomerId = ele.Customer_Master.Customer_ID;
+		CustomerName = ele.Customer_Master.Customer_Name;
+		SalesOrderNumber = ele.Sales_Order_No;
+		SalesOrderNumber = ele.Sales_Order_No;
+		SalesOrderDate = ele.Sales_Order_Date;
+		ItemId = itemData.Item_ID;
+		ItemType = itemData.Item_Type;
+		ItemName = itemData.Item_Name;
+		ItemQuantity = itemData.Quantity;
+		newMap.put("customer_id","6281569000000201827");
+		newMap.put("date",SalesOrderDate);
+		newMap.put("shipment_date",SalesOrderDate);
+		itemMap = Map();//will store items in this map
+		itemMap.put("name","18K Rose Gold Wide Band Ring");//item name MAP and its value
+		itemMap.put("description","This is test description");//item description, if there are multiple items, use a for loop to pick and put multiple items
+		itemList.add(itemMap);
+		newMap.put("line_items",newList);
+		response = zoho.inventory.createRecord("salesorders",   "885922714",    newMap,    "inventory");
+                                                          ^                 ^            ^            ^
+                                                          |                 |            |            |
+                                                      module_name     organization     your     name_of_application
+                                                                       name            map      (books, crm or etc
+		newMap2.put("line_items",newList);
+	}
+	info response;
+}
