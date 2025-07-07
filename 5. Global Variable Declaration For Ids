@@ -13,6 +13,7 @@ void automation.xyztesting()
  valueMap = Map();//Create map
  valueMap.put("apiname","Ro_number");
  valueMap.put("value", new_var);
-//update value in the original varible
+
+//update new value in the original varible
  res = zoho.crm.invokeConnector("crm.set",valueMap);//push value using invoke connector
 }
