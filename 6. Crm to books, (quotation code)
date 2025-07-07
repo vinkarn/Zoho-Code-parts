@@ -1,4 +1,5 @@
-//Crm to books, data updatation
+//Crm to books, record creation.
+
 void automation.quotationToZohoBooksFunction(Int QuotationId)
 {
 dataQuotations = zoho.crm.getRecordById("Quotations",QuotationId);
@@ -50,6 +51,7 @@ for each  mini_form in Subform_1
 		//         ];
 		// 		info putValuesInBooks;
 		response2 = zoho.books.createRecord("Items","60043102411",valueMap.toString(),"books1");
+					application.createRecord("module_name","org_id_from_books", map_variable_name, "appllication")
 		info response2;
 	}
 }
