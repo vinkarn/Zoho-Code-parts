@@ -1,0 +1,70 @@
+//This is code is reference of how to create records in Inventory using deluge script
+//This include to pick data from sub form and make a subform for items in the Inventory
+
+CustomerName = input.Customer_Name;
+custdata = Customer_Master[ID == CustomerName];
+Customer_ID = custdata.Customer_ID;
+// info Customer_ID;
+mapp = Map();
+arraylist = list();
+for each  ele in input.Item_Details
+{
+	lineitemmap = Map();
+	lineitemmap.put("item_id",ele.Items_Description.Items_id);
+	// 	lineitemmap.put("description",ele.Door_Ref);
+	// 	lineitemmap.put("description",ele.Product_Ref1);
+	// 	lineitemmap.put("description",ele.Door_Type);
+	// 	lineitemmap.put("description",ele.Door_Ref);
+	// 	lineitemmap.put("description",ele.Vision_Panel_mm);
+	// 	lineitemmap.put("description",ele.Door_Leaf_Size_Width_mm);
+	// 	lineitemmap.put("description",ele.Door_Leaf_Size_Height_mm);
+	// 	lineitemmap.put("description",ele.Fire_Rating_Min);
+	lineitemmap.put("rate",ele.Unit_Price_AED);
+	lineitemmap.put("quantity",ele.Qty);
+	lineitemmap.put("item_total",ele.Total_Unit_Price_AED);
+	arraylist.add(lineitemmap);
+}
+mapp.put("customer_id",Customer_ID);
+mapp.put("line_items",arraylist);
+// mapp.put("line_items",arraylist1);
+// mapp.put("line_items",arraylist2);
+// mapp.put("line_items",arraylist3);
+mapp.put("salesorder_number",input.SO_No);
+mapp.put("date",input.Date_field);
+mapp.put("branch_name",input.Destination);
+mapp.put("payment_terms_label",input.Mode_Term_of_Payment);
+mapp.put("delivery_method",input.Despatch);
+mapp.put("salesperson_name",input.Sales_Person);
+customFieldList = List();
+customFieldMap1 = Map();
+customFieldMap1.put('api_name','cf_payment_terms');
+customFieldMap1.put('value',input.Mode_Term_of_Payment);
+customFieldList.add(customFieldMap1);
+customFieldMap2 = Map();
+customFieldMap2.put('api_name','cf_division');
+customFieldMap2.put('value',input.Division1);
+customFieldList.add(customFieldMap2);
+customFieldMap3 = Map();
+customFieldMap3.put('api_name','cf_customer_s_purchase_order');
+customFieldMap3.put('value',input.Customer);
+customFieldList.add(customFieldMap3);
+customFieldMap5 = Map();
+customFieldMap5.put('api_name','cf_project');
+customFieldMap5.put('value',input.Name);
+customFieldList.add(customFieldMap5);
+customFieldMap6 = Map();
+customFieldMap6.put('api_name','cf_job_order');
+customFieldMap6.put('value',input.Job_No);
+customFieldList.add(customFieldMap6);
+customFieldMap7 = Map();
+customFieldMap7.put('api_name','cf_division');
+customFieldMap7.put('value',input.Division1);
+customFieldList.add(customFieldMap7);
+customFieldMap8 = Map();
+customFieldMap8.put('api_name','cf_location');
+customFieldMap8.put('value',input.Location1);
+customFieldList.add(customFieldMap8);
+mapp.put('custom_fields',customFieldList);
+// info mapp;
+createInvoice_Book = zoho.inventory.createRecord("salesorders","849813778",mapp,"inventory");
+info "Sales Order Created Successfully " + createInvoice_Book;
