@@ -1,0 +1,20 @@
+//Check if the email already exist in Contact module, Show popup for that 
+try {
+    const email = ZDK.Page.getField("Email").getValue();
+
+    if (email && email.trim() !== "") {
+        // Use searchByEmail on Contacts module directly with the email string
+        const contacts = ZDK.Apps.CRM.Contacts.searchByEmail(email.trim());
+
+        if (contacts && contacts.length > 0) {
+            ZDK.Client.showAlert("A contact with this email already exists.");
+        } else {
+            ZDK.Client.showAlert("No contact found with this email.");
+        }
+    } else {
+        ZDK.Client.showAlert("Please enter an email address.");
+    }
+} catch (e) {
+    ZDK.Client.showAlert("An error occurred: " + e.message);
+    ZDK.Console.error(e);
+}
