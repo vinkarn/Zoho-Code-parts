@@ -1,0 +1,29 @@
+#the below code is for checking current time and comparing it with 9 am(dubai time) and 6 pm (dubai time)
+  #and if the time is in between that, it prints office time, else it prints that it is outside office hours
+
+
+
+// The time zoho is fetching is For Vancouver, So we are adding 11 hrs to match it to Dubai Standard Time
+currentDT = zoho.currenttime.addHour(11).toString("dd-MMM-yyyy HH:mm:ss");	todaysDate = currentDT.toString("dd-MMM-yyyy");//getting current day's date
+
+// Today's 9 AM and 6 PM in same above format
+nineAMSTR = todaysDate + " 09:00:00";
+sixPMStr = todaysDate + " 18:00:00";
+
+// Convert all to datetime objects
+currentDTObj = currentDT.toDateTime("dd-MMM-yyyy HH:mm:ss");
+nineAMObj = nineAMSTR.toDateTime("dd-MMM-yyyy HH:mm:ss");
+sixPMObj = sixPMStr.toDateTime("dd-MMM-yyyy HH:mm:ss");
+info currentDTObj;
+info nineAMObj;
+info sixPMObj;
+
+// Compare
+if(currentDTObj >= nineAMObj && currentDTObj <= sixPMObj )
+{
+	info "It's is office time";
+}
+else
+{
+	info "It's not office time";
+}
