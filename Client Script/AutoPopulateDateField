@@ -1,0 +1,13 @@
+//auto update date field with today's date, when lead status is changed.(trigger lead status)
+//remove the lead status part and the if statement, and you can set trigger as page event and onLoad of the page
+let statusField = ZDK.Page.getField('Lead_Status'); 
+let dateField = ZDK.Page.getField('Lead_Date');
+if (statusField.getValue() !== null && statusField.getValue() !== '') {
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.toLocaleString('default', { month: 'short' }); // e.g., "Jul"
+    let dd = String(today.getDate()).padStart(2, '0');
+    let formattedDate = `${mm} ${dd}, ${yyyy}`; // "YYYY-MM-DD" format
+
+    dateField.setValue(formattedDate); // For a Date-only field
+}
