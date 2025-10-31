@@ -1,0 +1,14 @@
+const event_field = ZDK.Page.getField("Event");
+let event_id = event_field.getValue().id;
+searchDataEvent = ZDK.Apps.CRM.Event.fetchById(event_id);
+project_id = searchDataEvent._Project_Name_Lookup_Id;
+developer_id = searchDataEvent._Developer_Lookup_Id;
+
+searchDataProject = ZDK.Apps.CRM.Project.fetchById(project_id);
+val_project_name = searchDataProject._Name;
+
+searchDeveloper = ZDK.Apps.CRM.Developers.fetchById(developer_id);
+val_developer_name = searchDeveloper._Name;
+ 
+let project_name = ZDK.Page.getField("Project_Name");
+project_name.setValue({ id: project_id, name: val_project_name });
