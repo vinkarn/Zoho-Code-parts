@@ -1,0 +1,79 @@
+let subformField = ZDK.Page.getField("Product_Fitment");
+let rows = subformField.getValue();
+log("Subform rows:", rows);
+let subformRow = [];
+let QuantityArray = [];
+let price = "";
+let conversionValue = "";
+ 
+if (rows && rows.length > 0) {
+    rows.forEach(function (row, index) {
+ 
+        let Product = row.Products;
+        let SQM = row.Unit_of_Purchase.name;
+ 
+        if (!Product || !Product.id) {
+            log(" No Product found in row " + (index + 1));
+            return;
+        }
+ 
+        let Product_Id = Product.id;
+        let Product_Data = ZDK.Apps.CRM.Price_Master.fetchById(Product_Id);
+ 
+        porductLookupID = Product_Data._Product_Lookup_Id;
+        let productDatainfo = ZDK.Apps.CRM.Products.fetchById(porductLookupID);
+ 
+        let conversion = productDatainfo._UOM_Conversion1;
+ 
+        let matchFound = false;
+        conversionValue = "";
+ 
+        conversion.forEach(SQMName => {
+            let SQMValue = SQMName.UOM.name;
+ 
+            if (!SQMValue) {
+                return;
+            }
+ 
+            if (SQMValue == SQM) {
+                conversionValue = SQMName.Conversion_Rate;
+                matchFound = true;  
+                return;
+            }
+        });
+ 
+        if (!matchFound) {
+            ZDK.Client.showAlert("No SQM Conversion found for: " + SQM);
+            log("No matching conversion found for SQM: " + SQM);
+ 
+ 
+            subformRow[index] = rows[index];
+            subformRow[index].SQM = "";
+            subformRow[index].List_Price = "";
+            return;
+        }
+ 
+        let priceFound = false;
+ 
+        let UOMprice = Product_Data._UOM_price;
+        price = "";
+ 
+        UOMprice.forEach(UOMP1 => {
+            let CurrentUOM = UOMP1.UOM.name;
+            if (CurrentUOM == SQM) {
+                price = UOMP1.Price;
+                priceFound = true;
+                return;
+            }
+        });
+        if (!priceFound) {
+            ZDK.Client.showAlert("No Price Conversion found for: " + price);
+            log("No matching conversion found for price: " + price);
+            subformRow[index] = rows[index];
+            subformRow[index].SQM = conversionValue;
+            subformRow[index].List_Price = price;
+        }
+    });
+ 
+    ZDK.Page.getField("Product_Fitment").setValue(subformRow);
+}
