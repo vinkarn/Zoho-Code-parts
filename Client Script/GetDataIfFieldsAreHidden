@@ -1,0 +1,29 @@
+//You can use the following code to access data of records that are hidden in the system, but you still need to access that data to execute some functionality.
+//As if you have applied layout rule on some fields to hide them, they will not be accessible if you try to use ZDK.Page.getField().getValue();
+//I will return "null" value, all the time
+//So, use the following code to get the record id of the current record and fetch the data from there.
+
+
+var url = $Client.url.toString();
+log(JSON.stringify(url));
+
+var urlArray = url.split("/");
+log("Split pass");
+// Example for a "Potentials" module, adjust the index based on your module and URL structure
+var urlIndex = urlArray.indexOf("Leads"); 
+log("UrlIndex of leads pass");
+var recordID = urlArray[(urlIndex + 1)];
+log("Index fecth pass")
+log("Record ID from URL: " + recordID);
+
+//fetch current record all data 
+var details = ZDK.Apps.CRM.Leads.fetchById(recordID.toString());
+log(JSON.stringify(details));
+
+//getthign the fields
+Product_Group = details._Product_Group_Segment;
+Market = details._Market;
+Industry = details._Industry1;
+Application = details._Application;
+Field_of_Use = details._Field_of_Use;
+Process = details._Process;
