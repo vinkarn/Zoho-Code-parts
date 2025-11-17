@@ -1,0 +1,76 @@
+var url = $Client.url.toString();
+log(JSON.stringify(url));
+
+var urlArray = url.split("/");
+log("Split pass");
+// Example for a "Potentials" module, adjust the index based on your module and URL structure
+var urlIndex = urlArray.indexOf("Leads"); 
+log("UrlIndex of leads pass");
+var recordID = urlArray[(urlIndex + 1)];
+log("Index fecth pass")
+log("Record ID from URL: " + recordID);
+
+//fetch current record details from the system
+var details = ZDK.Apps.CRM.Leads.fetchById(recordID.toString());
+log(JSON.stringify(details));
+
+Product_Group = details._Product_Group_Segment;
+Market = details._Market;
+Industry = details._Industry1;
+Application = details._Application;
+Field_of_Use = details._Field_of_Use;
+Process = details._Process;
+
+// log(Product_Group + Market + Industry + Application + Field_of_Use + Process);
+
+// Product_Group = ZDK.Page.getField("Product_Group_Segment").getValue();
+// Market = ZDK.Page.getField("Market").getValue();
+// Industry = ZDK.Page.getField("Industry1").getValue();
+// Application = ZDK.Page.getField("Application").getValue();
+// Field_of_Use = ZDK.Page.getField("Field_of_Use").getValue();
+// Process = ZDK.Page.getField("Process").getValue();
+
+
+PG = ZDK.Page.getField("Product_Group2");
+log("product group formula field is : " + PG);
+
+criteria = "((Product_Group:equals:" + Product_Group + ") and (Market:equals:" + Market + ") and (Industry:equals:" + Industry + ") and (Application:equals:" + Application + ") and (Field_of_Use:equals:" + Field_of_Use +"))";
+// criteria = "((Product_Group:equals:" + Product_Group + ") and (Market:equals:" + Market + ") and (Industry:equals:" + Industry + ") and (Application:equals:" + Application + ") and (Field_of_Use:equals:" + Field_of_Use + ") and (Process:equals:" + Process + "))";
+
+//search all brand category
+all_brand_category = ZDK.Apps.CRM.Brand_Category.fetch();
+
+my_brand_category = [];
+
+all_brand_category.forEach(function(element, index1){//go through each record
+    id = element._id;
+    log(id + index1);
+    name1 = element._Name;
+    log("this is new name for testign " + JSON.stringify(name1));
+    brandCategory = ZDK.Apps.CRM.Brand_Category.fetchById(id);//get brandCategory whole data
+    log(JSON.stringify(brandCategory));
+    subform = brandCategory._Subform;//get subform data from above data
+    subform.forEach(function (element2, index2) {//go through each subform records and match the cretieria
+        pg = element2.Product_Group;
+        market = element2.Market;
+        industry = element2.Industry;
+        application = element2.Application;
+        field_of_use = element2.Field_of_Use;
+        process = element2.Process; 
+        log(pg + index2);
+        log(market);
+        log(industry);
+        log(application);
+        log(field_of_use);
+        log(process);
+        if (pg == Product_Group && market == Market && industry == Industry && application == Application && field_of_use == Field_of_Use && process == Process) {//match this cretiria
+            my_brand_category.push(name1);//add that particular brand_category into a list
+        }
+
+    });
+    log("thisis our nw list " + my_brand_category);
+
+});
+let cretiria3 = "";
+log(JSON.stringify(my_brand_category));
+for (let i in my_brand_category) {
