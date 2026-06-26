@@ -1,0 +1,24 @@
+The syntax of the below file is as per the validation rules;
+
+entityMap = crmAPIRequest.toMap().get("record");
+fieldValue = entityMap.get("State");
+response = Map();
+if(!fieldValue.isNull() && fieldValue != "")
+{
+	// Allows:
+	// 123
+	// +123
+	// -123
+	// 123 & 456
+	// 123 & 456 & 789
+	// +123 & 456 & 789
+	isMatch = fieldValue.matches("^\d+(?:\s&\s\d+)*$");
+	if(!isMatch)
+	{
+		response.put("status","Failed");
+		response.put("message","Enter either a single number or multiple numbers separated by ' & '. Example: 123 or 123 & 456 & 788");
+		return response;
+	}
+}
+response.put("status","success");
+return response;
