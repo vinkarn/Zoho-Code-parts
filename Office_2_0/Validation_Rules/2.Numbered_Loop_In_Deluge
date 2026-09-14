@@ -7,3 +7,7 @@ for each rec in loop
 	info count;
 	count=count+1;
 }
+
+//rightPad adds spaces to the right n number of times,
+//removeLastOccurence removes last comma from the data, 
+//and toList we make a list using it
