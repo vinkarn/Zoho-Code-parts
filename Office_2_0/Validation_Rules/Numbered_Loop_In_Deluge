@@ -1,0 +1,9 @@
+n=100;
+val="";
+loop = val.rightPad(n).replaceAll(" ", "1,").removeLastOccurence(",").toList();
+count=1;
+for each rec in loop
+{
+	info count;
+	count=count+1;
+}
